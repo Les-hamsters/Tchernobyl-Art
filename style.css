@@ -1,0 +1,59 @@
+@font-face {
+    font-family: gunplay;
+    src: url(./gunplay.otf);
+}
+
+#cercle {
+    display: grid;
+    width: fit-content;
+    grid-template-columns: repeat(var(--diametre), 1fr);
+    grid-template-rows: repeat(var(--diametre), 1fr);
+    grid-column-gap: 0px;
+    grid-row-gap: 0px;
+
+    >* {
+        position: relative;
+        align-items: center;
+        border: 1px solid #000;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+    }
+
+    * {
+        background-size: cover;
+        aspect-ratio: 1;
+    }
+
+    >*>image {
+        position: absolute;
+        opacity: 0;
+        width: inherit;
+    }
+}
+
+
+body {
+    background: #000;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.hidden {
+    visibility: hidden;
+}
+
+.number span {
+    font-family: gunplay;
+    text-align: center;
+    background-color: #222;
+    width: inherit;
+    position: absolute;
+    padding-top: 1.5em;
+    font-size: 1.5em;
+    color: #aaa;
+}
