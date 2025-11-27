@@ -25,6 +25,16 @@
         aspect-ratio: 1;
     }
 
+    *.right,
+    *.right>* {
+        background-position: right;
+    }
+
+    *.left,
+    *.left>* {
+        background-position: left;
+    }
+
     >*>image {
         position: absolute;
         opacity: 0;
@@ -32,6 +42,19 @@
     }
 }
 
+image {
+    transition: all 700ms;
+}
+
+:has(>image) {
+    cursor: zoom-in;
+    transition: all 200ms;
+
+    &:hover {
+        transform: scale(2);
+        z-index: 1;
+    }
+}
 
 body {
     background: #000;
@@ -41,6 +64,7 @@ body {
     align-items: center;
     height: 100vh;
     margin: 0;
+    overflow: hidden;
 }
 
 .hidden {
@@ -56,4 +80,18 @@ body {
     padding-top: 1.5em;
     font-size: 3vh;
     color: #aaa;
+}
+
+.zoomed {
+    cursor: zoom-out;
+    transform: scale(20) !important;
+    z-index: 2;
+}
+
+.allumé>image {
+    opacity: 1 !important;
+}
+
+* {
+    user-select: none;
 }

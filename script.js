@@ -6,18 +6,6 @@ document.documentElement.style.setProperty("--diametre", diamètre);
 
 const cercle = document.getElementById("cercle")
 
-function toggleColor(el) {
-    const allumé = !!el.getAttribute("allumé");
-
-    if (allumé) {
-        el.removeAttribute("allumé")
-    } else {
-        el.setAttribute("allumé", true)
-    }
-
-    el.childNodes[0].animate([{ opacity: Number(allumé) }, { opacity: Number(!allumé) }], { duration: 200, fill: "forwards" })
-}
-
 // Double boucle pour créer un carré d'images sans les images (matrice)
 for (let i = 0; i < diamètre; i++) {
     for (let j = 0; j < diamètre; j++) {
@@ -68,9 +56,18 @@ for (const child of children) {
         const imageNumber = Math.floor(Math.random() * imageCount);
         child.style.backgroundImage = `url(./photos/${imageNumber}-s.png)`;
         child.setAttribute("image-number", imageNumber)
+        if (Math.random() < 0.5) {
+            child.classList.add("right")
+        } else {
+            child.classList.add("left")
+        }
 
         const el = document.createElement("image");
         el.style.backgroundImage = `url(./photos/${imageNumber}-c.png)`;
+
+        child.addEventListener("click", (e) => {
+            child.classList.toggle("zoomed")
+        })
 
         child.appendChild(el)
     }
@@ -78,19 +75,23 @@ for (const child of children) {
 
 // la fonction qui gère notre réaction en chaine
 
-function reactionEnChaine(el, imageId) {
-    toggleColor(el)
+/**
+ * @param {HTMLElement} el 
+ * @param {number} id 
+ */
+function reactionEnChaine(el, id) {
+    el.classList.toggle("allumé")
     setTimeout(() => {
-        toggleColor(el)
+        el.classList.toggle("allumé")
     }, 3500)
 
     // on défini les carrées autour de celui coloré
-    const droite = imageId + 1
-    const gauche = imageId - 1
-    const haut = (Math.floor(imageId / diamètre) - 1) * diamètre + imageId % diamètre
-    const bas = (Math.floor(imageId / diamètre) + 1) * diamètre + imageId % diamètre
+    const droite = id => id + 1
+    const gauche = id => id - 1
+    const haut = id => (Math.floor(id / diamètre) - 1) * diamètre + id % diamètre
+    const bas = id => (Math.floor(id / diamètre) + 1) * diamètre + id % diamètre
 
-    const directions = [droite, gauche, haut, bas]
+    const directions = [droite(id), gauche(id), haut(id), bas(id), droite(haut(id)), gauche(haut(id)), droite(bas(id)), gauche(bas(id))]
 
     setTimeout(() => {
         for (let i = 0; i <= Math.round(Math.random()); i++) {
@@ -102,7 +103,7 @@ function reactionEnChaine(el, imageId) {
             while (
                 i < timeout &&
                 (!autreImage ||
-                    !!autreImage.getAttribute("allumé") ||
+                    autreImage.classList.contains("allumé") ||
                     autreImage.classList.contains("hidden") ||
                     autreImage.classList.contains("number"))
             ) {
@@ -119,7 +120,12 @@ function reactionEnChaine(el, imageId) {
     }, 400)
 }
 
-const imageId = Math.floor(Math.random() * diamètre ** 2);
-const el = cercle.childNodes[imageId];
-reactionEnChaine(el, imageId)
+let imgId = Math.floor(Math.random() * diamètre ** 2);
+let el = cercle.childNodes[imgId];
+while (el.classList.contains("hidden") || el.classList.contains("number")) {
+    imgId = Math.floor(Math.random() * diamètre ** 2);
+    el = cercle.childNodes[imgId];
+}
+
+reactionEnChaine(el, imgId)
 
